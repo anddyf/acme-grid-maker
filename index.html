@@ -1,0 +1,256 @@
+<html>
+    <head>
+        <style>
+            /* semantics */
+            *{
+                font-family:Arial, Helvetica, sans-serif
+            }
+            body{
+                margin:0;
+                background-image:url(orig.gif)
+            }
+            li{
+                width:200px;
+                height: 200px;
+                background:chartreuse; 
+            }
+            form{
+                max-width: 100vw;
+            }
+            /* semantics end */
+
+            /*containers begin*/
+            .container{ 
+                display: flex;
+                padding:1em;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                flex-wrap:wrap;
+                box-sizing: border-box;
+            }
+
+            .grid-idx-box{
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               min-width:300px;
+               flex-direction: column;
+            }
+            .grid-container{
+                display: flex;
+                padding:1em;
+                border: 1px solid #000000;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                flex-wrap:wrap;
+                box-sizing: border-box;
+            }
+            .grid-container div{
+                flex-wrap: wrap;
+                max-width:100vw;
+                flex-direction: row;
+                background: grey;
+                border:1px solid #2cace2;
+            }
+            /*containers end*/
+
+            /*Within Container Begins*/
+            .container h1{
+                color:white
+            }
+            .container button{
+                width:40vw; 
+                height:40px;
+                margin:0.5em;
+                border-radius:1em;
+                border: 1px solid #2cace2;
+                color:white;
+                background: #2cace2;
+                font-size:1.5em;
+            }
+            #inputRow{
+                width:40vw; 
+                height:40px;
+                margin:0.5em;
+                font-size:1.5em;
+                border-radius:1em;
+                padding:1em;
+            }
+            #rowError span{
+                color:#c90000;
+            }
+            #inputColumn{
+                width:40vw;
+                height:40px; 
+                margin:0.5em;
+                font-size:1.5em;
+                border-radius:1em;
+                padding:1em;
+            }
+            #columnError span{
+                color:#c90000;
+            }
+            .grid-container div button{
+                width:23px;
+                height:23px;
+                margin: 0;
+                padding: 0;
+ 
+            }
+            .grid-idx-box span{
+               color:white;
+               font-size:1.5em;
+               padding:0 0 1em
+                
+            }
+            .active{
+               background:blue;
+               margin: 0;
+               padding: 0;
+               border-width: none;
+               -webkit-appearance: none
+            }
+            /*Within Container Ends*/
+
+        </style>
+        </head>
+
+        <body>
+        <form class='container'>
+            <h1>Acme Grid Maker</h1>
+            
+                <input id="inputRow" type="number" placeholder="row"/>
+                <label id= 'rowError'><span> </span></label>
+                <input id="inputColumn" type="number" placeholder="column"/>
+                <label id= 'columnError'><span></span></label>
+                    <button onclick="gridValue()" > <!-- Runs Function-->
+                            Make Grid 
+                    </button>
+                </form>
+
+        <div class="grid-container"></div>
+        <div class="grid-idx-box"><span></span></div>
+
+        </body>
+
+        <script>
+
+        // number to count from 1 to 50 begins
+            const correctNumber = []
+            for(var i = 1; i <= 50; i++){
+                correctNumber.push(i);
+            }
+        // number to count from 1 to 50 ends
+
+        // number to count for Make grid button to become Erase grid begins
+            let count = 0
+        // number to count for Make grid button to become Erase grid ends
+
+        //----------------------------------------------------------------------------
+
+        // Query Selectors for function on load begin
+
+            const list = document.querySelector('.container')
+            const mylist = document.querySelector('.container button')
+            const grid = document.querySelector('.grid-container')
+            const idBlock = document.querySelector('.grid-idx-box')
+            const rowErr = document.querySelector('#rowError')
+            const columnErr = document.querySelector('#columnError')
+
+        // Query Selectors for function on load end
+
+        //----------------------------------------------------------------------------
+           
+        // Once the Make Grid Button is clicked this Grid Value function runs
+            function gridValue() { 
+            // Pulls value from input submitted and stores it in a variable
+                let x = document.getElementById("inputRow").value; 
+                let y = document.getElementById("inputColumn").value;
+
+            // Make variable into number
+                let row = Number(x)
+                let column = Number(y)
+
+            // Object for true or false toggle activation below
+                let truth = {
+                value : false
+                }
+
+        //----------------------------------------------------------------------------
+            
+            // An condition that sees whether an input is between 1 - 50
+                if (correctNumber.includes(row) && correctNumber.includes(column)){ 
+                    // if input is between  1- 50 it will create grid with rows and column
+                    for (let i = 0; i < row; i++){
+
+                        // div for Row container
+                        let rowBlock = document.createElement('div')
+
+                        for ( let j = 0; j < column; j++){
+
+                        // button for column container
+                            let columnBlock = document.createElement('button')
+
+                            // addEventListener to run a toggle  
+                            columnBlock.addEventListener ( 'click',()=>{
+                                truth.value = !truth.value
+                                console.log(truth.value)
+
+                                // Push empty innerHTML when button does not have class 'active'  
+                                idBlock.querySelector('span').innerHTML = ``
+                                columnBlock.classList.toggle('active')
+
+                                // if button has a class named 'active' innerHTML will show Row and IDX
+                                if(columnBlock.classList.contains('active')){
+                                    idBlock.querySelector('span').innerHTML = `rowIDX: ${i} colIDX:${j}`
+                                }     
+                            })
+
+                            // if truth.value is true create a class named 'active'
+                            if(truth.value){
+                                columnBlock.className = 'active'  
+                            }
+                            // push buttons into the row container
+                            rowBlock.append(columnBlock)
+                        } // closes column
+
+                         // push row container into the grid-container
+                        grid.append(rowBlock)
+                    }// closes row
+
+                }// closes if statment
+        //----------------------------------------------------------------------------
+                 // if number is not between 1- 50  a different result is shown below
+                else{
+                    // if row input is not between 1- 50  
+                    if(!correctNumber.includes(row)){
+                        // Row must be between 1-50 will be shown below row input
+                        rowErr.querySelector('span').innerHTML = 'Row must be between  1-50'
+                    }
+
+                    if(!correctNumber.includes(column)){
+                        // Column must be between 1-50 will be shown below column input
+                        columnErr.querySelector('span').innerHTML = 'Column must be between  1-50' 
+                    }
+                } // closes else
+        //----------------------------------------------------------------------------
+            
+            } // close grid value Function
+
+        //----------------------------------------------------------------------------
+            // switch off and on make grid button using count
+            // if count is even, preventDefault is ON and 'Make Grid' is replace with 'Erase Grid'
+            // if odd, page is refreshed and grid starts as new with Make Grid again
+            mylist.addEventListener('click', ev =>{
+                if(count % 2 === 0){
+                list.querySelector('button').innerHTML = 'Erase Grid'
+                ev.preventDefault()
+                console.log(count)
+                count++
+                }   
+            })
+        </script>
+  
+</html>
